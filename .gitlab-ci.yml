@@ -1,0 +1,13 @@
+stages:
+  - test
+
+test:
+  stage: test
+  image: node:14-alpine
+  script:
+    - npm install
+    - npm test
+  tags:
+    - dind
+    - docker
+    - dev
