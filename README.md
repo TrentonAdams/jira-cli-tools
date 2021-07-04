@@ -7,7 +7,7 @@ These tools allow for a variety of features. We have...
 * jira-release - Generates a CAB PDF to attach to a CAB request, based on a Jira
   project release.
 
-## Install
+## Local Install
 
 Install is fairly straightforward, but Linux or MacOS are required for running
 these tools; it may now work on Windows but there is no installation process for
