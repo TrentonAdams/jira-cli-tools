@@ -1,0 +1,5 @@
+.idea
+jira-cli-tools.iml
+node_modules
+page.pdf
+dist
