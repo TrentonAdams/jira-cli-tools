@@ -2,7 +2,7 @@ name: Releases
 
 on:
   push:
-    tags-ignore:
+    tags:
       - '*RC*'
 
 jobs:
