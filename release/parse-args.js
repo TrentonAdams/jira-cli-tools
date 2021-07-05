@@ -43,8 +43,7 @@ async function parseArgs(args)
     let programOptions = program.opts();
     let programArguments = {options: {}};
     Object.assign(programArguments.options, programOptions);
-    Object.assign(programArguments, programOptions);
-    // TODO: 2021-07-03 tag:jsonly default --api-user to whatever is given for -u 
+    // TODO: 2021-07-03 tag:jsonly default --api-user to whatever is given for -u
     if (programArguments.password === '-')
     {
         await readStdinPassword(programArguments);

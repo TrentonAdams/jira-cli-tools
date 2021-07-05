@@ -55,7 +55,7 @@ describe('argument parsing tests', () => {
     test('parseArgs should parse -u value from arguments', async () => {
         const programArgs = await parseArgs(
             ['node', 'jira-issue', '-u', 'testuser', 'SLUG-225']);
-        expect(programArgs.username)
+        expect(programArgs.options.username)
             .toBe('testuser');
         expect(errorLogs)
             .not
@@ -65,7 +65,7 @@ describe('argument parsing tests', () => {
     test('parseArgs should parse --user value from arguments', async () => {
         const programArgs = await parseArgs(
             ['node', 'jira-issue', '--username', 'testuser', 'SLUG-225']);
-        expect(programArgs.username)
+        expect(programArgs.options.username)
             .toBe('testuser');
         expect(errorLogs)
             .not
@@ -93,7 +93,7 @@ describe('argument parsing tests', () => {
     test('parseArgs should parse -p value from arguments', async () => {
         const programArgs = await parseArgs(
             ['node', 'jira-issue', '-p', 'testpassword', 'SLUG-225']);
-        expect(programArgs.password)
+        expect(programArgs.options.password)
             .toBe('testpassword');
         expect(errorLogs)
             .not
@@ -103,7 +103,7 @@ describe('argument parsing tests', () => {
     test('parseArgs should parse --password value from arguments', async () => {
         const programArgs = await parseArgs(
             ['node', 'jira-issue', '--password', 'testpassword', 'SLUG-225']);
-        expect(programArgs.password)
+        expect(programArgs.options.password)
             .toBe('testpassword');
         expect(errorLogs)
             .not
@@ -137,7 +137,7 @@ describe('argument parsing tests', () => {
         expect(errorLogs)
             .not
             .toContainEqual(["Missing argument --release"])
-        expect(programArgs.release)
+        expect(programArgs.options.release)
             .toBe('1.21.0')
     });
 
@@ -147,7 +147,7 @@ describe('argument parsing tests', () => {
         expect(errorLogs)
             .not
             .toContainEqual(["Missing argument --release"])
-        expect(programArgs.release)
+        expect(programArgs.options.release)
             .toBe('1.21.0')
     });
 
@@ -175,7 +175,7 @@ describe('argument parsing tests', () => {
         expect(errorLogs)
             .not
             .toContainEqual(["Missing argument --slug"])
-        expect(programArgs.slug)
+        expect(programArgs.options.slug)
             .toBe('SLUG')
     });
 
@@ -185,7 +185,7 @@ describe('argument parsing tests', () => {
         expect(errorLogs)
             .not
             .toContainEqual(["Missing argument --slug"])
-        expect(programArgs.slug)
+        expect(programArgs.options.slug)
             .toBe('SLUG')
     });
 
@@ -213,7 +213,7 @@ describe('argument parsing tests', () => {
         expect(errorLogs)
             .not
             .toContainEqual(["Missing argument --token"])
-        expect(programArgs.token)
+        expect(programArgs.options.token)
             .toBe('1909c1234h')
     });
 
@@ -223,7 +223,7 @@ describe('argument parsing tests', () => {
         expect(errorLogs)
             .not
             .toContainEqual(["Missing argument --token"])
-        expect(programArgs.token)
+        expect(programArgs.options.token)
             .toBe('1909c1234h')
     });
 
@@ -243,7 +243,7 @@ describe('argument parsing tests', () => {
         expect(errorLogs)
             .not
             .toContainEqual(["Missing argument --api-user"])
-        expect(programArgs.apiUser)
+        expect(programArgs.options.apiUser)
             .toBe('user')
     });
 
@@ -275,7 +275,7 @@ describe('argument parsing tests', () => {
             expect(errorLogs)
                 .not
                 .toContainEqual(["Missing argument --jira-url-prefix"])
-            expect(programArgs.jiraUrlPrefix)
+            expect(programArgs.options.jiraUrlPrefix)
                 .toBe('https://jira.example.com')
         });
 
