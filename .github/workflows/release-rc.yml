@@ -2,7 +2,7 @@ name: Releases
 
 on:
   push:
-    tags-ignore:
+    tags:
       - '*RC*'
 
 jobs:
@@ -16,7 +16,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
+        
       - name: Create release
         id: create_release
         uses: actions/create-release@v1
