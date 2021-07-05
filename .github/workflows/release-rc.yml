@@ -7,7 +7,7 @@ on:
 
 jobs:
 
-  release:
+  release-linux:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -26,4 +26,24 @@ jobs:
         with:
           artifacts: "jira-cli-tools-*.tar.gz"
           bodyFile: release.md
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+  release-macos:
+    runs-on: macos-latest
+    strategy:
+      matrix:
+        node-version: [14.17.2]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v2
+        with:
+          node-version: ${{ matrix.node-version }}
+      - run: npm install
+      - run: make package
+
+      - uses: ncipollo/release-action@v1.8.4
+        with:
+          artifacts: "jira-cli-tools-*.tar.gz"
           token: ${{ secrets.GITHUB_TOKEN }}
