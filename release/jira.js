@@ -47,7 +47,10 @@ async function getIssuesInRelease(user, apiToken, slug, release,
     }
     catch (e)
     {
-        console.error(e.response.data.errorMessages);
+        // jira thinks it's okay to return HTML during API calls, for certain
+        // errors, so we can't always rely on the API returning an errorMessages
+        // entry
+        console.error(e.response.data.errorMessages || e.response.data);
     }
 }
 
