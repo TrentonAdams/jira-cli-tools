@@ -27,7 +27,7 @@ jobs:
           release_name: Release ${{ github.ref }}
           body_path: release.md
           draft: false
-          prerelease: true
+          prerelease: false
 
   release_assets:
     name: Release assets
