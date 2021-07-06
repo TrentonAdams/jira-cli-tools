@@ -1,6 +1,11 @@
 ## Release Install
 
-We support Linux x64 and MacOS x64 releases only.  For Windows, you'll have to build your own with the pkg command; and make adjustments to the code if it doesn't work.
+We support Linux x64 and MacOS x64 releases only. For Windows, you'll have to
+build your own with the pkg command; and make adjustments to the code if it
+doesn't work.
+
+Install [poppler](https://poppler.freedesktop.org/) first, as pdfunite is
+required and is included with poppler.
 
 ### Linux
 

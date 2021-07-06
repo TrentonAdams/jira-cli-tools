@@ -9,6 +9,9 @@ These tools allow for a variety of features. We have...
 
 ## Local Install
 
+Note: These tools require pdfunite, which comes with
+the [poppler](https://poppler.freedesktop.org/) package.
+
 Install is fairly straightforward, but Linux or MacOS are required for running
 these tools; it may now work on Windows but there is no installation process for
 that. This process installs the following in `/usr/local/bin`...
@@ -35,6 +38,8 @@ make uninstall
 ```
 
 ## Jira Release CLI tool
+
+                                                                                               er
 
 Generally this is used for attaching the release issue documentation to Service
 Now.
