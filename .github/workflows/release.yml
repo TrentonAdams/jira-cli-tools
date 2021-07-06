@@ -7,14 +7,42 @@ on:
 
 jobs:
 
-  release:
+  create_release:
+    name: Create release
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [14.17.2]
-
+    # Note this. We are going to use that in further jobs.
+    outputs:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Create release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body_path: release.md
+          draft: false
+          prerelease: true
+
+  release_assets:
+    name: Release assets
+    needs: create_release # we need to know the upload URL
+    runs-on: ${{ matrix.config.os }} # we run many different builds
+    strategy:
+      # just an example matrix
+      matrix:
+        config:
+          - os: ubuntu-latest
+          - os: macos-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v2
         with:
@@ -22,8 +50,23 @@ jobs:
       - run: npm install
       - run: make -e package
 
-      - uses: ncipollo/release-action@v1.8.4
+      - name: Upload MacOS release assets
+        if: matrix.config.os == 'macos-latest'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          artifacts: "jira-cli-tools-*.tar.gz"
-          bodyFile: release.md
-          token: ${{ secrets.GITHUB_TOKEN }}
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_name: jira-cli-tools-macos-x64.tar.gz
+          asset_path: dist/jira-cli-tools-macos-x64.tar.gz
+          asset_content_type: application/octet-stream
+      - name: Upload Linux release assets
+        if: matrix.config.os == 'ubuntu-latest'
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ needs.create_release.outputs.upload_url }}
+          asset_name: jira-cli-tools-linux-x64.tar.gz
+          asset_path: dist/jira-cli-tools-linux-x64.tar.gz
+          asset_content_type: application/octet-stream

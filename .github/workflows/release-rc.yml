@@ -70,26 +70,3 @@ jobs:
           asset_name: jira-cli-tools-linux-x64.tar.gz
           asset_path: dist/jira-cli-tools-linux-x64.tar.gz
           asset_content_type: application/octet-stream
-#  release-macos:
-#    runs-on: macos-latest
-#    strategy:
-#      matrix:
-#        node-version: [14.17.2]
-#
-#    steps:
-#      - uses: actions/checkout@v2
-#      - name: Use Node.js ${{ matrix.node-version }}
-#        uses: actions/setup-node@v2
-#        with:
-#          node-version: ${{ matrix.node-version }}
-#      - run: npm install
-#      - run: make package
-#
-#      - name: Upload release assets
-#        uses: actions/upload-release-asset@v1
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          upload_url: ${{ needs.create_release.outputs.upload_url }}
-#          asset_path: jira-cli-tools-macos-x64-*.tar.gz
-#          asset_content_type: application/octet-stream
