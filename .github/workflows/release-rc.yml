@@ -74,7 +74,7 @@ jobs:
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
           asset_name: jira-cli-tools-macos-x64.tar.gz
-          asset_path: jira-cli-tools-macos-x64.tar.gz
+          asset_path: dist/jira-cli-tools-macos-x64.tar.gz
           asset_content_type: application/octet-stream
       - name: Upload Linux release assets
         if: matrix.config.os == 'ubuntu-latest'
@@ -84,7 +84,7 @@ jobs:
         with:
           upload_url: ${{ needs.create_release.outputs.upload_url }}
           asset_name: jira-cli-tools-linux-x64.tar.gz
-          asset_path: jira-cli-tools-linux-x64.tar.gz
+          asset_path: dist/jira-cli-tools-linux-x64.tar.gz
           asset_content_type: application/octet-stream
 #  release-macos:
 #    runs-on: macos-latest
