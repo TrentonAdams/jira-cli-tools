@@ -1,4 +1,3 @@
-GITHUB_REF = 'refs/tags/local'
 os_type 				:=
 chrome_os_type 				:=
 ifeq ($(OS),Windows_NT)
@@ -31,8 +30,7 @@ package: clean test
 	mkdir -p dist/usr/local/bin/
 	mv dist/jira-cli-tools-chromium/ dist/usr/local/bin/
 	mv dist/jira-release dist/usr/local/bin/
-	echo "github-ref: ${GITHUB_REF}"
-	cd dist && tar -cvzf jira-cli-tools-${os_type}-x64-$${GITHUB_REF#refs/tags/}.tar.gz usr/local/bin
+	cd dist && tar -cvzf jira-cli-tools-${os_type}-x64.tar.gz usr/local/bin
 
 uninstall:
 	sudo rm -vf /usr/local/bin/jira-release
