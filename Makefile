@@ -1,3 +1,4 @@
+GITHUB_REF = 'refs/tags/local'
 os_type 				:=
 chrome_os_type 				:=
 ifeq ($(OS),Windows_NT)
