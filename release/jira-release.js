@@ -23,6 +23,7 @@ const fs = require("fs");
 const {getIssuesInRelease} = require("./jira");
 const {mkdtemp} = require('fs/promises');
 
+
 async function viewIssue(jiraUrlPrefix, page, issue)
 {
     await
@@ -31,7 +32,39 @@ async function viewIssue(jiraUrlPrefix, page, issue)
             {waitUntil: 'load'});
 }
 
-async function generateReleaseIssuePDFs(browser, page, programArguments)
+function generateReleasePDF(slug, release, issues, tmpDirPath)
+{
+    try
+    {
+        const pdfRelease = path.join(os.tmpdir(), `${slug}-${release}.pdf`)
+        const pdfFiles = issues.map(
+            issue => path.join(tmpDirPath, `${issue}.pdf`))
+        child_process.execFileSync('pdfunite',
+            [...pdfFiles, `${pdfRelease}`],
+            {});
+        console.log(`release pdf in file ${pdfRelease}`);
+    }
+    catch (e)
+    {
+        console.error('Error running pdfunite', e)
+        process.exit(1)
+    }
+}
+
+async function generateIssuePDFs(issues, tmpDirPath, jiraUrlPrefix, page)
+{
+    console.log('processing issues: ', issues);
+
+    for (let i = 0; i < issues.length; i++)
+    {
+        let pdfName = path.join(tmpDirPath, `${issues[i]}.pdf`);
+        console.log(`creating ${pdfName}`)
+        await viewIssue(jiraUrlPrefix, page, issues[i]);
+        await page.pdf({path: pdfName});
+    }
+}
+
+async function retrieveJiraIssues(page, tmpDirPath, programArguments)
 {
     const {
         username,
@@ -44,7 +77,7 @@ async function generateReleaseIssuePDFs(browser, page, programArguments)
     } = programArguments.options;
 
     await page.setViewport({width: 1920, height: 1080});
-    await page.setUserAgent('jira-cli-tools/1.0');
+    await page.setUserAgent('jira-cli-tools/1.2.x');
 
     console.log(`Opening ${jiraUrlPrefix}`)
     await page.goto(`${jiraUrlPrefix}`, {waitUntil: 'load'});
@@ -61,50 +94,17 @@ async function generateReleaseIssuePDFs(browser, page, programArguments)
 
     console.log(`logged in as ${username}`)
 
-    const issues = await getIssuesInRelease(apiUser, token,
+    return await getIssuesInRelease(apiUser, token,
         slug, release, jiraUrlPrefix);
-
-    console.log('processing issues: ', issues);
-
-    const tmpDirPath = await mkdtemp(path.join(os.tmpdir(), 'jira-release-'))
-    for (let i = 0; i < issues.length; i++)
-    {
-        let pdfName = path.join(tmpDirPath, `${issues[i]}.pdf`);
-        console.log(`creating ${pdfName}`)
-        await viewIssue(jiraUrlPrefix, page, issues[i]);
-        await page.pdf({path: pdfName});
-    }
-
-    const pdfRelease = path.join(os.tmpdir(), `${slug}-${release}.pdf`)
-    const pdfFiles = issues.map(issue => path.join(tmpDirPath, `${issue}.pdf`))
-    generateReleasePDF(pdfFiles, pdfRelease)
-    console.log(`cleaning up temporary files: ${tmpDirPath}`)
-    fs.rmSync(tmpDirPath, {recursive: true})
-}
-
-function generateReleasePDF(pdfFiles, pdfRelease)
-{
-    try
-    {
-        child_process.execFileSync('pdfunite',
-            [...pdfFiles, `${pdfRelease}`],
-            {});
-        console.log(`release pdf in file ${pdfRelease}`);
-    }
-    catch (e)
-    {
-        console.error('Error running pdfunite', e)
-        process.exit(1)
-    }
 }
 
 async function run()
 {
-    const options = await parseArgs(process.argv);
+    const programArguments = await parseArgs(process.argv);
     const browser = await puppeteer.launch(
         {
             headless: true,
-            executablePath: options.chromePath
+            executablePath: programArguments.chromePath
         });
     const page = await browser.newPage();
     await page.setDefaultTimeout(5000);
@@ -112,7 +112,20 @@ async function run()
 
     try
     {
-        await generateReleaseIssuePDFs(browser, page, options)
+        const tmpDirPath = await mkdtemp(
+            path.join(os.tmpdir(), 'jira-release-'))
+        const {slug, release} = programArguments.options;
+
+        const issues = await retrieveJiraIssues(page,
+            tmpDirPath, programArguments);
+        await generateIssuePDFs(issues, tmpDirPath,
+            programArguments.options.jiraUrlPrefix, page);
+        if (programArguments.options.merge)
+        {
+            await generateReleasePDF(slug, release, issues, tmpDirPath);
+            console.log(`cleaning up temporary files: ${tmpDirPath}`)
+            fs.rmSync(tmpDirPath, {recursive: true})
+        }
     }
     catch (e)
     {

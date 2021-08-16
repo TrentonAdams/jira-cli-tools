@@ -24,6 +24,7 @@ async function parseArgs(args)
     // our own way because the commander library is stupid, and is directly
     // tied to stdout/stderr.
     program
+        .option('-m|--merge', 'toggle PDF merge into a single PDF')
         .option('-r|--release [string]', 'jira release; e.g. 1.21.0')
         .option('-s|--slug [string]', 'jira slug; e.g. uppercase project SLUG')
         .option('--jira-url-prefix [string]', 'jira url prefix.  e.g.' +

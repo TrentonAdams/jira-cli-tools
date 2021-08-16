@@ -279,6 +279,13 @@ describe('argument parsing tests', () => {
                 .toBe('https://jira.example.com')
         });
 
+    test('parseArgs should allow -m arg in arguments', async () => {
+        const programArgs = await parseArgs(
+            ['node', 'jira-issue', '-m']);
+        expect(programArgs.options.merge)
+            .toBe(true);
+    });
+
     afterEach(() => {
         process.env = OLD_ENV;
         process.exit = OLD_PROCESS_EXIT;
